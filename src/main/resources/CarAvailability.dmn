@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="Definitions_1p8dp1p" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="CarAvailability" name="Car availability">
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="Model">
+        <inputExpression id="inputExpression_1" typeRef="string">
+          <text>${model}</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ow9dso" label="Equipment version">
+        <inputExpression id="LiteralExpression_0udvmc4" typeRef="string">
+          <text>${equipmentVersion}</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0vj4odf" label="Fuel type">
+        <inputExpression id="LiteralExpression_0gsxrqp" typeRef="string">
+          <text>${fuelType}</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0mg1e9s" label="Model year">
+        <inputExpression id="LiteralExpression_0q3x1g2" typeRef="string">
+          <text>${modelYear}</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Available" name="available" typeRef="boolean" />
+      <rule id="DecisionRule_08f8al4">
+        <inputEntry id="UnaryTests_1xm9vpd">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oont5x">
+          <text>"style","rs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15i7b4i">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xb4zt3">
+          <text>"previous"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1vg6679">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ue5pkr">
+        <inputEntry id="UnaryTests_18zcahf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qu6gl4">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dvg3i7">
+          <text>"hybrid"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_12ys4vp">
+          <text>"previous"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_019yggx">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0633pft">
+        <inputEntry id="UnaryTests_18cnqad">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1vxcnx1">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06m42ij">
+          <text>"petrol","diesel"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1o8eujv">
+          <text>"previous"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jcubq1">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0xisl58">
+        <inputEntry id="UnaryTests_0prllml">
+          <text>"fabia"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1okrz2e">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oklvdo">
+          <text>"diesel"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1l2kqe1">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_17qvizr">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0htc15w">
+        <inputEntry id="UnaryTests_1krqsvw">
+          <text>"fabia"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_12rgohc">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jp57sy">
+          <text>"petrol","hybrid"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0etb40v">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0nm17ev">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0k1yhgg">
+        <inputEntry id="UnaryTests_14s5ama">
+          <text>"fabia"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1jmyiw6">
+          <text>"style","rs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0j8k7v6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0owb0xm">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09skppl">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ofygue">
+        <inputEntry id="UnaryTests_0ajnt21">
+          <text>"scala"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0uvrfdz">
+          <text>"rs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0t2r405">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kmb2ul">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1gssx4f">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0cq00xy">
+        <inputEntry id="UnaryTests_08ljwxu">
+          <text>"scala"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1t8rslq">
+          <text>"active","ambition","style"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0br69mc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bw1fkf">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jz113e">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_07f2kjk">
+        <inputEntry id="UnaryTests_0p5wtuo">
+          <text>"octavia"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18j0prd">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16ts1qr">
+          <text>"diesel","hybrid"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ce9jc6">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ex1wvp">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ny0ihk">
+        <inputEntry id="UnaryTests_0u5qpxi">
+          <text>"octavia"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o6ryi2">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1f56yzl">
+          <text>"petrol"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0drb4p3">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_05s7yf9">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0x4f8i7">
+        <inputEntry id="UnaryTests_0soi0fq">
+          <text>"octavia","superb"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0kqo2ys">
+          <text>"style","rs"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o6x1n0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04fduk2">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1m4txs0">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_098nitn">
+        <inputEntry id="UnaryTests_1uo5wm3">
+          <text>"superb"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_007yax5">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1cr58w1">
+          <text>"hybrid"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_019blul">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_02u4pso">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_110v5bb">
+        <inputEntry id="UnaryTests_06ux81e">
+          <text>"superb"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gjizhg">
+          <text>"active","ambition"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1324ur8">
+          <text>"petrol","diesel"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1d7s96i">
+          <text>"current"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0c58ce2">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
