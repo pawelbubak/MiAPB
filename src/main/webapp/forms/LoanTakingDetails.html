@@ -1,7 +1,4 @@
 <form name="OdebranieDecyzji">
-	<div>
-		<h3>The order was abandoned.</h3>
-	</div>
 	<div class="form-group">
 		<label for="model">Model</label>
 		<input name="model" class="form-control" readonly="true"
@@ -28,16 +25,18 @@
 		<input name="available" class="form-control" readonly="true"
 			cam-variable-type="String" cam-variable-name="available"/>
 	</div>
-	
 	<div class="form-group">
-		<label for="placeAnOrder">Place an order?</label>
-		<input name="placeAnOrder" class="form-control" readonly="true"
-			cam-variable-type="String" cam-variable-name="placeAnOrder"/>
+		<label for="carAvailability">Car available in</label>
+		<input name="carAvailability" class="form-control" readonly="true"
+			cam-variable-type="String" cam-variable-name="carAvailability"/>
 	</div>
 	
 	<div class="form-group">
-		<label for="cancellationReason">Reason for cancellation</label>
-		<input name="cancellationReason" class="form-control" readonly="true"
-			cam-variable-type="String" cam-variable-name="cancellationReason"/>
+		<label for="financing">Financing</label> 
+		<select name="financing" class="form-control" 
+			cam-variable-type="String" cam-variable-name="financing">
+			<option value="loan">cash</option>
+			<option value="previous">loan</option>
+		</select>
 	</div>
 </form>
