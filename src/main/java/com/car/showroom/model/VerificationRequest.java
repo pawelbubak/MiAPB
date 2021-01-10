@@ -18,6 +18,7 @@ public class VerificationRequest implements JavaDelegate {
 		processVariables.put("monthlyIncome", execution.getVariable("monthlyIncome"));
 		processVariables.put("peopleNumber", execution.getVariable("peopleNumber"));
 		processVariables.put("monthlyInstallmentsSum", execution.getVariable("monthlyInstallmentsSum"));
+		processVariables.put("correct", execution.getVariable("correct"));
 		runtimeService.startProcessInstanceByMessage("VerificationRequest", processVariables);
 	}
 

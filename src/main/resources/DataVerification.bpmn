@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_06oe8h0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_06oe8h0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
   <bpmn:process id="DataVerification" name="Data verification" isExecutable="true">
     <bpmn:startEvent id="StartDataVerification">
       <bpmn:outgoing>SequenceFlow_0rr69e0</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="VerificationRequest" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0rr69e0" sourceRef="StartDataVerification" targetRef="Task_0mt5avy" />
+    <bpmn:sequenceFlow id="SequenceFlow_0rr69e0" sourceRef="StartDataVerification" targetRef="IntermediateCatchEvent_0k9hx35" />
     <bpmn:scriptTask id="Task_0mt5avy" name="Verify data" scriptFormat="groovy">
-      <bpmn:incoming>SequenceFlow_0rr69e0</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0k3b2zg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1492kcn</bpmn:outgoing>
       <bpmn:script>double loanInstallment = carValue / repaymentPeriod
 double income = monthlyIncome - monthlyInstallmentsSum
@@ -20,6 +20,14 @@ execution.setVariable("correct", correct )</bpmn:script>
       <bpmn:incoming>SequenceFlow_1492kcn</bpmn:incoming>
       <bpmn:messageEventDefinition messageRef="VerificationResponse" camunda:class="com.car.showroom.model.VerificationResponse" />
     </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_0k9hx35" name="Waiting for verification">
+      <bpmn:incoming>SequenceFlow_0rr69e0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0k3b2zg</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1tfj33f">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0k3b2zg" sourceRef="IntermediateCatchEvent_0k9hx35" targetRef="Task_0mt5avy" />
   </bpmn:process>
   <bpmn:message id="VerificationRequest" name="VerificationRequest" />
   <bpmn:message id="VerificationResponse" name="VerificationResponse" />
@@ -30,18 +38,28 @@ execution.setVariable("correct", correct )</bpmn:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0rr69e0_di" bpmnElement="SequenceFlow_0rr69e0">
         <di:waypoint x="209" y="120" />
-        <di:waypoint x="259" y="120" />
+        <di:waypoint x="258" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_1wrlrva_di" bpmnElement="Task_0mt5avy">
-        <dc:Bounds x="259" y="80" width="100" height="80" />
+        <dc:Bounds x="376" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1492kcn_di" bpmnElement="SequenceFlow_1492kcn">
-        <di:waypoint x="359" y="120" />
-        <di:waypoint x="409" y="120" />
+        <di:waypoint x="476" y="120" />
+        <di:waypoint x="547" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1iz6sl9_di" bpmnElement="EndDataVerification">
-        <dc:Bounds x="409" y="102" width="36" height="36" />
+        <dc:Bounds x="547" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0k9hx35_di" bpmnElement="IntermediateCatchEvent_0k9hx35">
+        <dc:Bounds x="258" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="145" width="53" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0k3b2zg_di" bpmnElement="SequenceFlow_0k3b2zg">
+        <di:waypoint x="294" y="120" />
+        <di:waypoint x="376" y="120" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -11,7 +11,6 @@
         <bpmn:flowNodeRef>ExclusiveGateway_1nzxkcq</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1rsgd9j</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_095hw0c</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>UserTask_08ni853</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0gd0r5l</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEvent_104h30l</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_03hdqxo</bpmn:flowNodeRef>
@@ -31,15 +30,19 @@
         <bpmn:flowNodeRef>ExclusiveGateway_0oiprvx</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>UserTask_12qfy1s</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ScriptTask_1nvacjc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_08ni853</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_04fspo4" name="Bank">
         <bpmn:flowNodeRef>Task_0iaqixt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0by3s89</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_0vyj88l</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_1bcksmh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0r6sjxe</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0k08cjz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0u1djdc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateThrowEvent_1bcksmh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_0nr7xmd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateThrowEvent_0vyj88l</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_086rp17</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_06pjsca</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" camunda:formKey="embedded:app:forms/CarSelection.html" camunda:initiator="customer">
@@ -181,7 +184,8 @@ execution.setVariable("cancellationReason", "The time to make a decision to plac
     <bpmn:scriptTask id="Task_12co6rg" name="Cancellation reason" scriptFormat="groovy">
       <bpmn:incoming>SequenceFlow_1e8gv86</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_075i4ql</bpmn:outgoing>
-      <bpmn:script>execution.setVariable("cancellationReason", "The car from the previous model year cannot be ordered.")</bpmn:script>
+      <bpmn:script>execution.setVariable("placeAnOrder", false)
+execution.setVariable("cancellationReason", "The car from the previous model year cannot be ordered.")</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:boundaryEvent id="BoundaryEvent_1t34uwm" attachedToRef="Task_03hdqxo">
       <bpmn:outgoing>SequenceFlow_1e8gv86</bpmn:outgoing>
@@ -205,30 +209,14 @@ execution.setVariable("cancellationReason", "The time to make a decision to plac
       <bpmn:outgoing>SequenceFlow_0ho4iss</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_04c5jm7" sourceRef="ScriptTask_1nvacjc" targetRef="UserTask_12qfy1s" />
-    <bpmn:sequenceFlow id="SequenceFlow_17b850j" sourceRef="IntermediateThrowEvent_0vyj88l" targetRef="IntermediateThrowEvent_1bcksmh" />
-    <bpmn:sequenceFlow id="SequenceFlow_1ep15ue" sourceRef="UserTask_08ni853" targetRef="IntermediateThrowEvent_0vyj88l" />
-    <bpmn:sequenceFlow id="SequenceFlow_0qm6ktv" sourceRef="IntermediateThrowEvent_1bcksmh" targetRef="ExclusiveGateway_0r6sjxe" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ep15ue" sourceRef="UserTask_08ni853" targetRef="Task_0nr7xmd" />
     <bpmn:sequenceFlow id="SequenceFlow_0ph15ch" name="No" sourceRef="ExclusiveGateway_0oiprvx" targetRef="Task_0gd0r5l">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!loanGranted}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1q2eln6" name="Yes" sourceRef="ExclusiveGateway_0oiprvx" targetRef="Task_0d8itx0" />
     <bpmn:sequenceFlow id="SequenceFlow_132qh23" sourceRef="Task_0gd0r5l" targetRef="EndEvent_104h30l" />
-    <bpmn:userTask id="UserTask_08ni853" name="Loan inquiry" camunda:formKey="embedded:app:forms/LoanTakingDetails.html" camunda:assignee="${customer}">
-      <bpmn:incoming>SequenceFlow_0ho4iss</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1ep15ue</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0vyj88l" name="Verify personal data">
-      <bpmn:incoming>SequenceFlow_1ep15ue</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_17b850j</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="VerificationRequest" camunda:class="com.car.showroom.model.VerificationRequest" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1bcksmh" name="Receive the verification result">
-      <bpmn:incoming>SequenceFlow_17b850j</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0qm6ktv</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="VerificationResponse" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0r6sjxe" name="Correct data?" default="SequenceFlow_1kuo2fz">
-      <bpmn:incoming>SequenceFlow_0qm6ktv</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0xlj1ql</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0a6gt1m</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1kuo2fz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -324,6 +312,41 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmn:outgoing>SequenceFlow_04c5jm7</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="SequenceFlow_14tqf1r" sourceRef="Task_03hdqxo" targetRef="ScriptTask_1nvacjc" />
+    <bpmn:sequenceFlow id="SequenceFlow_041ezxf" sourceRef="Task_0nr7xmd" targetRef="ExclusiveGateway_086rp17" />
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1bcksmh" name="Receive the verification result">
+      <bpmn:incoming>SequenceFlow_1z0rkke</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0qimgf3</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="VerificationResponse" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:scriptTask id="Task_0nr7xmd" name="Data preparation for verification" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_1ep15ue</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_041ezxf</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("correct", true)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask id="UserTask_08ni853" name="Loan inquiry" camunda:formKey="embedded:app:forms/LoanTakingDetails.html" camunda:assignee="${customer}">
+      <bpmn:incoming>SequenceFlow_0ho4iss</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ep15ue</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_19yspz0" sourceRef="ExclusiveGateway_086rp17" targetRef="IntermediateThrowEvent_0vyj88l" />
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_0vyj88l" name="Verify personal data">
+      <bpmn:incoming>SequenceFlow_19yspz0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1t5x12m</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="VerificationRequest" camunda:class="com.car.showroom.model.VerificationRequest" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1z0rkke" sourceRef="ExclusiveGateway_086rp17" targetRef="IntermediateThrowEvent_1bcksmh" />
+    <bpmn:sequenceFlow id="SequenceFlow_0qimgf3" sourceRef="IntermediateThrowEvent_1bcksmh" targetRef="ExclusiveGateway_06pjsca" />
+    <bpmn:sequenceFlow id="SequenceFlow_1t5x12m" sourceRef="IntermediateThrowEvent_0vyj88l" targetRef="ExclusiveGateway_06pjsca" />
+    <bpmn:parallelGateway id="ExclusiveGateway_086rp17">
+      <bpmn:incoming>SequenceFlow_041ezxf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19yspz0</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1z0rkke</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0xlj1ql" sourceRef="ExclusiveGateway_06pjsca" targetRef="ExclusiveGateway_0r6sjxe" />
+    <bpmn:parallelGateway id="ExclusiveGateway_06pjsca">
+      <bpmn:incoming>SequenceFlow_0qimgf3</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1t5x12m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xlj1ql</bpmn:outgoing>
+    </bpmn:parallelGateway>
   </bpmn:process>
   <bpmn:error id="Error_11nmflg" name="OrderError" errorCode="OrderError" />
   <bpmn:message id="VerificationRequest" name="VerificationRequest" />
@@ -525,9 +548,9 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0ho4iss_di" bpmnElement="SequenceFlow_0ho4iss">
         <di:waypoint x="1208" y="78" />
-        <di:waypoint x="1208" y="219" />
+        <di:waypoint x="1208" y="171" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1215" y="113" width="15" height="14" />
+          <dc:Bounds x="1215" y="99" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_04c5jm7_di" bpmnElement="SequenceFlow_04c5jm7">
@@ -537,33 +560,25 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmndi:BPMNShape id="CallActivity_12628gh_di" bpmnElement="ScriptTask_1nvacjc">
         <dc:Bounds x="839" y="13" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_17b850j_di" bpmnElement="SequenceFlow_17b850j">
-        <di:waypoint x="1319" y="554" />
-        <di:waypoint x="1370" y="554" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_04j3ctp_di" bpmnElement="IntermediateThrowEvent_0vyj88l">
-        <dc:Bounds x="1283" y="536" width="36" height="36" />
+        <dc:Bounds x="1368" y="653" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1266" y="579" width="73" height="27" />
+          <dc:Bounds x="1351" y="696" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_1ilvh9a_di" bpmnElement="IntermediateThrowEvent_1bcksmh">
-        <dc:Bounds x="1370" y="536" width="36" height="36" />
+        <dc:Bounds x="1368" y="577" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1348" y="579" width="83" height="27" />
+          <dc:Bounds x="1346" y="620" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_08ni853_di" bpmnElement="UserTask_08ni853">
-        <dc:Bounds x="1158" y="219" width="100" height="80" />
+        <dc:Bounds x="1158" y="171" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1ep15ue_di" bpmnElement="SequenceFlow_1ep15ue">
-        <di:waypoint x="1258" y="259" />
-        <di:waypoint x="1301" y="259" />
-        <di:waypoint x="1301" y="536" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0qm6ktv_di" bpmnElement="SequenceFlow_0qm6ktv">
-        <di:waypoint x="1406" y="554" />
-        <di:waypoint x="1461" y="554" />
+        <di:waypoint x="1258" y="211" />
+        <di:waypoint x="1301" y="211" />
+        <di:waypoint x="1301" y="461" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0oiprvx_di" bpmnElement="ExclusiveGateway_0oiprvx" isMarkerVisible="true">
         <dc:Bounds x="1697" y="354" width="50" height="50" />
@@ -598,7 +613,7 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmndi:BPMNShape id="ExclusiveGateway_0r6sjxe_di" bpmnElement="ExclusiveGateway_0r6sjxe" isMarkerVisible="true">
         <dc:Bounds x="1461" y="529" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1452" y="511" width="67" height="14" />
+          <dc:Bounds x="1414.5" y="513" width="67" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0a6gt1m_di" bpmnElement="SequenceFlow_0a6gt1m">
@@ -610,11 +625,11 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1kuo2fz_di" bpmnElement="SequenceFlow_1kuo2fz">
-        <di:waypoint x="1486" y="579" />
-        <di:waypoint x="1486" y="620" />
-        <di:waypoint x="1565" y="620" />
+        <di:waypoint x="1511" y="554" />
+        <di:waypoint x="1615" y="554" />
+        <di:waypoint x="1615" y="580" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1515" y="602" width="19" height="14" />
+          <dc:Bounds x="1617" y="560" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_1jygtro_di" bpmnElement="Task_0iaqixt">
@@ -670,6 +685,47 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
         <di:waypoint x="889" y="108" />
         <di:waypoint x="889" y="93" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_041ezxf_di" bpmnElement="SequenceFlow_041ezxf">
+        <di:waypoint x="1301" y="541" />
+        <di:waypoint x="1301" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_030if2s_di" bpmnElement="Task_0nr7xmd">
+        <dc:Bounds x="1251" y="461" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_19yspz0_di" bpmnElement="SequenceFlow_19yspz0">
+        <di:waypoint x="1301" y="660" />
+        <di:waypoint x="1301" y="671" />
+        <di:waypoint x="1368" y="671" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1z0rkke_di" bpmnElement="SequenceFlow_1z0rkke">
+        <di:waypoint x="1326" y="635" />
+        <di:waypoint x="1347" y="635" />
+        <di:waypoint x="1347" y="595" />
+        <di:waypoint x="1368" y="595" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_0a8q8ce_di" bpmnElement="ExclusiveGateway_086rp17">
+        <dc:Bounds x="1276" y="610" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0qimgf3_di" bpmnElement="SequenceFlow_0qimgf3">
+        <di:waypoint x="1404" y="595" />
+        <di:waypoint x="1461" y="595" />
+        <di:waypoint x="1461" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1t5x12m_di" bpmnElement="SequenceFlow_1t5x12m">
+        <di:waypoint x="1404" y="671" />
+        <di:waypoint x="1461" y="671" />
+        <di:waypoint x="1461" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xlj1ql_di" bpmnElement="SequenceFlow_0xlj1ql">
+        <di:waypoint x="1486" y="635" />
+        <di:waypoint x="1510" y="635" />
+        <di:waypoint x="1510" y="604" />
+        <di:waypoint x="1486" y="604" />
+        <di:waypoint x="1486" y="579" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_1q1gkou_di" bpmnElement="ExclusiveGateway_06pjsca">
+        <dc:Bounds x="1436" y="610" width="50" height="50" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

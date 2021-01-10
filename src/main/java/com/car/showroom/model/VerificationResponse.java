@@ -10,6 +10,11 @@ public class VerificationResponse implements JavaDelegate {
 		RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
 		runtimeService.createMessageCorrelation("VerificationResponse")
 				.processInstanceId(execution.getVariable("parentBussinesKey").toString())
+				.setVariable("carValue", execution.getVariable("carValue"))
+				.setVariable("repaymentPeriod", execution.getVariable("repaymentPeriod"))
+				.setVariable("monthlyIncome", execution.getVariable("monthlyIncome"))
+				.setVariable("peopleNumber", execution.getVariable("peopleNumber"))
+				.setVariable("monthlyInstallmentsSum", execution.getVariable("monthlyInstallmentsSum"))
 				.setVariable("correct", execution.getVariable("correct"))
 				.correlateWithResult();
 	}
