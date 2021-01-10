@@ -26,11 +26,11 @@
         <bpmn:flowNodeRef>EndEvent_091a22t</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0d8itx0</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_11sb99i</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_0oew3lk</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>ScriptTask_1nvacjc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_1t34uwm</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_1k900pz</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0oiprvx</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_12qfy1s</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ScriptTask_1nvacjc</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_04fspo4" name="Bank">
         <bpmn:flowNodeRef>Task_0iaqixt</bpmn:flowNodeRef>
@@ -46,12 +46,11 @@
       <bpmn:outgoing>SequenceFlow_0to69si</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1xrci32" name="Yes" sourceRef="ExclusiveGateway_1nzxkcq" targetRef="Task_1huf4sr" />
-    <bpmn:sequenceFlow id="SequenceFlow_0duqyvi" sourceRef="Task_1huf4sr" targetRef="Task_0oew3lk" />
     <bpmn:sequenceFlow id="SequenceFlow_1fnqm4q" sourceRef="Task_0d8itx0" targetRef="EndEvent_091a22t" />
     <bpmn:sequenceFlow id="SequenceFlow_0to69si" sourceRef="StartEvent_1" targetRef="Task_1rsgd9j" />
     <bpmn:scriptTask id="Task_1huf4sr" name="Car available" scriptFormat="groovy">
       <bpmn:incoming>SequenceFlow_1xrci32</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0duqyvi</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1hqdeu2</bpmn:outgoing>
       <bpmn:script>execution.setVariable("available", true)
 execution.setVariable("carAvailability", "")</bpmn:script>
     </bpmn:scriptTask>
@@ -108,7 +107,7 @@ execution.setVariable("carAvailability", "")</bpmn:script>
     <bpmn:sequenceFlow id="SequenceFlow_0wgyb5h" sourceRef="UserTask_1qpeam8" targetRef="EndEvent_1rg8wai" />
     <bpmn:subProcess id="Task_03hdqxo" name="Order car">
       <bpmn:incoming>SequenceFlow_0aqyjrz</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0owu53n</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_14tqf1r</bpmn:outgoing>
       <bpmn:startEvent id="StartEvent_1sxhalq">
         <bpmn:outgoing>SequenceFlow_091x7au</bpmn:outgoing>
       </bpmn:startEvent>
@@ -188,8 +187,6 @@ execution.setVariable("cancellationReason", "The time to make a decision to plac
       <bpmn:outgoing>SequenceFlow_1e8gv86</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_11nmflg" />
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0sh6hzu" sourceRef="Task_0oew3lk" targetRef="ScriptTask_1nvacjc" />
-    <bpmn:sequenceFlow id="SequenceFlow_0owu53n" sourceRef="Task_03hdqxo" targetRef="Task_0oew3lk" />
     <bpmn:endEvent id="EndEvent_091a22t">
       <bpmn:incoming>SequenceFlow_1fnqm4q</bpmn:incoming>
     </bpmn:endEvent>
@@ -203,26 +200,11 @@ execution.setVariable("cancellationReason", "The time to make a decision to plac
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${financing=="loan"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="ExclusiveGateway_11sb99i" name="Cash purchase?" default="SequenceFlow_0ixfadz">
-      <bpmn:incoming>SequenceFlow_04c5jm7</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0hi0ct9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ixfadz</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0ho4iss</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Task_0oew3lk" name="Car financing choice" camunda:formKey="embedded:app:forms/FinancingChoice.html" camunda:assignee="${customer}">
-      <bpmn:incoming>SequenceFlow_0duqyvi</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0owu53n</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0sh6hzu</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_04c5jm7" sourceRef="ScriptTask_1nvacjc" targetRef="ExclusiveGateway_11sb99i" />
-    <bpmn:callActivity id="ScriptTask_1nvacjc" name="Call car value calculation" calledElement="CarValueCalculation">
-      <bpmn:extensionElements>
-        <camunda:in source="model" target="model" />
-        <camunda:in source="equipmentVersion" target="equipmentVersion" />
-        <camunda:in source="fuelType" target="fuelType" />
-        <camunda:out source="carValue" target="carValue" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_0sh6hzu</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_04c5jm7</bpmn:outgoing>
-    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="SequenceFlow_04c5jm7" sourceRef="ScriptTask_1nvacjc" targetRef="UserTask_12qfy1s" />
     <bpmn:sequenceFlow id="SequenceFlow_17b850j" sourceRef="IntermediateThrowEvent_0vyj88l" targetRef="IntermediateThrowEvent_1bcksmh" />
     <bpmn:sequenceFlow id="SequenceFlow_1ep15ue" sourceRef="UserTask_08ni853" targetRef="IntermediateThrowEvent_0vyj88l" />
     <bpmn:sequenceFlow id="SequenceFlow_0qm6ktv" sourceRef="IntermediateThrowEvent_1bcksmh" targetRef="ExclusiveGateway_0r6sjxe" />
@@ -324,6 +306,24 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmn:script>execution.setVariable("loanGranted", true)</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="SequenceFlow_1h3zb8s" sourceRef="Task_0u1djdc" targetRef="ExclusiveGateway_0oiprvx" />
+    <bpmn:userTask id="UserTask_12qfy1s" name="Car financing choice" camunda:formKey="embedded:app:forms/FinancingChoice.html" camunda:assignee="${customer}">
+      <bpmn:incoming>SequenceFlow_04c5jm7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0hi0ct9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0hi0ct9" sourceRef="UserTask_12qfy1s" targetRef="ExclusiveGateway_11sb99i" />
+    <bpmn:sequenceFlow id="SequenceFlow_1hqdeu2" sourceRef="Task_1huf4sr" targetRef="ScriptTask_1nvacjc" />
+    <bpmn:callActivity id="ScriptTask_1nvacjc" name="Call car value calculation" calledElement="CarValueCalculation">
+      <bpmn:extensionElements>
+        <camunda:in source="model" target="model" />
+        <camunda:in source="equipmentVersion" target="equipmentVersion" />
+        <camunda:in source="fuelType" target="fuelType" />
+        <camunda:out source="carValue" target="carValue" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1hqdeu2</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_14tqf1r</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04c5jm7</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="SequenceFlow_14tqf1r" sourceRef="Task_03hdqxo" targetRef="ScriptTask_1nvacjc" />
   </bpmn:process>
   <bpmn:error id="Error_11nmflg" name="OrderError" errorCode="OrderError" />
   <bpmn:message id="VerificationRequest" name="VerificationRequest" />
@@ -358,10 +358,6 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmndi:BPMNShape id="ScriptTask_0835yai_di" bpmnElement="Task_1huf4sr">
         <dc:Bounds x="540" y="13" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0duqyvi_di" bpmnElement="SequenceFlow_0duqyvi">
-        <di:waypoint x="640" y="53" />
-        <di:waypoint x="839" y="53" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0omiq8w_di" bpmnElement="Task_0d8itx0">
         <dc:Bounds x="1766" y="13" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -514,19 +510,6 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
       <bpmndi:BPMNShape id="ScriptTask_121u1tf_di" bpmnElement="Task_0jgrakp">
         <dc:Bounds x="847" y="143" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0sh6hzu_di" bpmnElement="SequenceFlow_0sh6hzu">
-        <di:waypoint x="939" y="53" />
-        <di:waypoint x="1015" y="53" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0owu53n_di" bpmnElement="SequenceFlow_0owu53n">
-        <di:waypoint x="860" y="123" />
-        <di:waypoint x="860" y="108" />
-        <di:waypoint x="889" y="108" />
-        <di:waypoint x="889" y="93" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_09j0yr0_di" bpmnElement="Task_0oew3lk">
-        <dc:Bounds x="839" y="13" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_11sb99i_di" bpmnElement="ExclusiveGateway_11sb99i" isMarkerVisible="true">
         <dc:Bounds x="1183" y="28" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -548,11 +531,11 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_04c5jm7_di" bpmnElement="SequenceFlow_04c5jm7">
-        <di:waypoint x="1115" y="53" />
-        <di:waypoint x="1183" y="53" />
+        <di:waypoint x="939" y="53" />
+        <di:waypoint x="1015" y="53" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="CallActivity_12628gh_di" bpmnElement="ScriptTask_1nvacjc">
-        <dc:Bounds x="1015" y="13" width="100" height="80" />
+        <dc:Bounds x="839" y="13" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_17b850j_di" bpmnElement="SequenceFlow_17b850j">
         <di:waypoint x="1319" y="554" />
@@ -669,6 +652,23 @@ execution.setVariable("substantiation", "The income is too low.")</bpmn:script>
         <di:waypoint x="1794" y="580" />
         <di:waypoint x="1794" y="427" />
         <di:waypoint x="1737" y="389" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_12qfy1s_di" bpmnElement="UserTask_12qfy1s">
+        <dc:Bounds x="1015" y="13" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0hi0ct9_di" bpmnElement="SequenceFlow_0hi0ct9">
+        <di:waypoint x="1115" y="53" />
+        <di:waypoint x="1183" y="53" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1hqdeu2_di" bpmnElement="SequenceFlow_1hqdeu2">
+        <di:waypoint x="640" y="53" />
+        <di:waypoint x="839" y="53" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_14tqf1r_di" bpmnElement="SequenceFlow_14tqf1r">
+        <di:waypoint x="860" y="123" />
+        <di:waypoint x="860" y="108" />
+        <di:waypoint x="889" y="108" />
+        <di:waypoint x="889" y="93" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
