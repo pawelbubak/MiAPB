@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1jpbcew" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="CarValueCalculation" name="Car value calculation" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1ohqa20</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1ohqa20" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_04hrhmq" />
+    <bpmn:sequenceFlow id="SequenceFlow_1imbwj9" sourceRef="ExclusiveGateway_04hrhmq" targetRef="Task_118cetf" />
+    <bpmn:sequenceFlow id="SequenceFlow_0yeqdi0" sourceRef="ExclusiveGateway_04hrhmq" targetRef="Task_1bcpb36" />
+    <bpmn:parallelGateway id="ExclusiveGateway_04hrhmq">
+      <bpmn:incoming>SequenceFlow_1ohqa20</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1imbwj9</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0yeqdi0</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Task_118cetf" name="Determine the base value of the car" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_1imbwj9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1rs3tfc</bpmn:outgoing>
+      <bpmn:script>double basicCarValue = 0
+
+if (model == "fabia") {
+  basicCarValue = 51800
+} else if (model == "scala") {
+  basicCarValue = 66400
+} else if (model == "octavia") {
+  basicCarValue = 82200
+} else {
+  basicCarValue = 102250
+}
+
+execution.setVariable("basicCarValue", basicCarValue)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_1bcpb36" name="Determine the extra payments for the type of engine" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_0yeqdi0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ep6n9x</bpmn:outgoing>
+      <bpmn:script>double extraPayments = 0
+
+if (fuelType == "diesel") {
+  extraPayments = 5000
+} else if (fuelType == "hybrid") {
+  extraPayments = 15000
+} else {
+  extraPayments = 0
+}
+
+execution.setVariable("extraPayments", extraPayments)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1rs3tfc" sourceRef="Task_118cetf" targetRef="Task_0h97slh" />
+    <bpmn:scriptTask id="Task_0h97slh" name="Determine the car equipment value" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_1rs3tfc</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05eu42o</bpmn:outgoing>
+      <bpmn:script>double carEquipmentValue = 0
+
+if (equipmentVersion == "ambition") {
+  carEquipmentValue =  basicCarValue * 0.25
+} else if (equipmentVersion == "style") {
+  carEquipmentValue = basicCarValue * 0.5
+} else if (equipmentVersion == "rs") {
+  carEquipmentValue = basicCarValue * 0.75
+}
+
+execution.setVariable("carEquipmentValue", carEquipmentValue)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_05eu42o" sourceRef="Task_0h97slh" targetRef="ExclusiveGateway_11zzgic" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ep6n9x" sourceRef="Task_1bcpb36" targetRef="ExclusiveGateway_11zzgic" />
+    <bpmn:endEvent id="EndEvent_0vna2co">
+      <bpmn:incoming>SequenceFlow_1bdr53b</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_041p30k" sourceRef="ExclusiveGateway_11zzgic" targetRef="Task_09kajec" />
+    <bpmn:parallelGateway id="ExclusiveGateway_11zzgic">
+      <bpmn:incoming>SequenceFlow_05eu42o</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1ep6n9x</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_041p30k</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1bdr53b" sourceRef="Task_09kajec" targetRef="EndEvent_0vna2co" />
+    <bpmn:scriptTask id="Task_09kajec" name="Calculate car value" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_041p30k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1bdr53b</bpmn:outgoing>
+      <bpmn:script>double carValue = basicCarValue + carEquipmentValue + extraPayments
+execution.setVariable("carValue", carValue)</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CarValueCalculation">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ohqa20_di" bpmnElement="SequenceFlow_1ohqa20">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="259" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1imbwj9_di" bpmnElement="SequenceFlow_1imbwj9">
+        <di:waypoint x="284" y="95" />
+        <di:waypoint x="284" y="57" />
+        <di:waypoint x="359" y="57" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0yeqdi0_di" bpmnElement="SequenceFlow_0yeqdi0">
+        <di:waypoint x="284" y="145" />
+        <di:waypoint x="284" y="191" />
+        <di:waypoint x="440" y="191" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_13pc0lg_di" bpmnElement="ExclusiveGateway_04hrhmq">
+        <dc:Bounds x="259" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0o80h73_di" bpmnElement="Task_118cetf">
+        <dc:Bounds x="359" y="17" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0wtdajl_di" bpmnElement="Task_1bcpb36">
+        <dc:Bounds x="440" y="151" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rs3tfc_di" bpmnElement="SequenceFlow_1rs3tfc">
+        <di:waypoint x="459" y="57" />
+        <di:waypoint x="509" y="57" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_03yngkr_di" bpmnElement="Task_0h97slh">
+        <dc:Bounds x="509" y="17" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05eu42o_di" bpmnElement="SequenceFlow_05eu42o">
+        <di:waypoint x="609" y="57" />
+        <di:waypoint x="686" y="57" />
+        <di:waypoint x="686" y="95" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ep6n9x_di" bpmnElement="SequenceFlow_1ep6n9x">
+        <di:waypoint x="540" y="191" />
+        <di:waypoint x="686" y="191" />
+        <di:waypoint x="686" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0vna2co_di" bpmnElement="EndEvent_0vna2co">
+        <dc:Bounds x="894" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_041p30k_di" bpmnElement="SequenceFlow_041p30k">
+        <di:waypoint x="711" y="120" />
+        <di:waypoint x="746" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_1aaf0c4_di" bpmnElement="ExclusiveGateway_11zzgic">
+        <dc:Bounds x="661" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1bdr53b_di" bpmnElement="SequenceFlow_1bdr53b">
+        <di:waypoint x="846" y="120" />
+        <di:waypoint x="894" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_0tnw4bc_di" bpmnElement="Task_09kajec">
+        <dc:Bounds x="746" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
